@@ -12,10 +12,10 @@ MAINmodule MAIN(24, 0x76);
 PRSmodule PRS(0x70);
 ADCmodule ADC(0x48, 0x49);
 FRQmodule FRQ(115200);
-Adafruit_MAX31856 TypeK1(7);
-Adafruit_MAX31856 TypeK2(8);
-Adafruit_MAX31856 TypeK3(9);
-Adafruit_MAX31856 TypeK4(10);
+Adafruit_MAX31856 TypeT1(7);
+Adafruit_MAX31856 TypeT2(8);
+Adafruit_MAX31856 TypeT3(9);
+Adafruit_MAX31856 TypeT4(10);
 
 
 float SensorRanges[8] = {1.6, 1.6, 1.6, 400, 400, 400, 400, 400};
@@ -43,22 +43,26 @@ void setup()
 
   PRS.config(B11111111, SensorRanges, B11111000, UnitSensors, UnitReq, pSens_i2c_address, false);
 
-  TypeK1.begin();
-  TypeK1.setThermocoupleType(MAX31856_TCTYPE_K);
+  TypeT1.begin();
+  TypeT1.setThermocoupleType(MAX31856_TCTYPE_T);
+  TypeT1.setConversionMode(MAX31856_ONESHOT_NOWAIT);
 
-  TypeK2.begin();
-  TypeK2.setThermocoupleType(MAX31856_TCTYPE_K);
+  TypeT2.begin();
+  TypeT2.setThermocoupleType(MAX31856_TCTYPE_T);
+  TypeT2.setConversionMode(MAX31856_ONESHOT_NOWAIT);
 
-  TypeK3.begin();
-  TypeK3.setThermocoupleType(MAX31856_TCTYPE_K);
+  TypeT3.begin();
+  TypeT3.setThermocoupleType(MAX31856_TCTYPE_T);
+  TypeT3.setConversionMode(MAX31856_ONESHOT_NOWAIT);
   
-  TypeK4.begin();
-  TypeK4.setThermocoupleType(MAX31856_TCTYPE_K);  
+  TypeT4.begin();
+  TypeT4.setThermocoupleType(MAX31856_TCTYPE_T);  
+  TypeT4.setConversionMode(MAX31856_ONESHOT_NOWAIT);
 
-      TypeK1.triggerOneShot();
-      TypeK2.triggerOneShot();
-      TypeK3.triggerOneShot();
-      TypeK4.triggerOneShot();
+      TypeT1.triggerOneShot();
+      TypeT2.triggerOneShot();
+      TypeT3.triggerOneShot();
+      TypeT4.triggerOneShot();
       long tStartMeasurement = millis();  
 }
 
@@ -80,20 +84,21 @@ void loop()
 
     FRQ.getFrequency(0);
 
-    if(millis()-tStartMeasurement >= 130)
+    if(millis()-tStartMeasurement >= 198)
     {
-      KTypeTemp[0] = TypeK1.readThermocoupleTemperature();
-      KTypeTemp[1] = TypeK2.readThermocoupleTemperature();
-      KTypeTemp[2] = TypeK3.readThermocoupleTemperature();
-      KTypeTemp[3] = TypeK4.readThermocoupleTemperature();
+      KTypeTemp[0] = TypeT1.readThermocoupleTemperature();
+      KTypeTemp[1] = TypeT2.readThermocoupleTemperature();
+      KTypeTemp[2] = TypeT3.readThermocoupleTemperature();
+      KTypeTemp[3] = TypeT4.readThermocoupleTemperature();
 
-      TypeK1.triggerOneShot();
-      TypeK2.triggerOneShot();
-      TypeK3.triggerOneShot();
-      TypeK4.triggerOneShot();
+      TypeT1.triggerOneShot();
+      TypeT2.triggerOneShot();
+      TypeT3.triggerOneShot();
+      TypeT4.triggerOneShot();
       
       tStartMeasurement = millis();
     }
+
 
 
     MAIN.readEnvP();
